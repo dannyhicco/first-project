@@ -9,16 +9,21 @@ public class EnemyAttack : MonoBehaviour
 
     Animator anim;
     GameObject player;
+	GameObject player2;
     PlayerHealth playerHealth;
+	PlayerHealth2 player2Health;
     EnemyHealth enemyHealth;
     bool playerInRange;
+	bool player2InRange;
     float timer;
 
 
     void Awake ()
     {
         player = GameObject.FindGameObjectWithTag ("Player");
+		player2 = GameObject.FindGameObjectWithTag ("Player2");
         playerHealth = player.GetComponent <PlayerHealth> ();
+		player2Health = player2.GetComponent <PlayerHealth2> ();
         enemyHealth = GetComponent <EnemyHealth>();
         anim = GetComponent <Animator> ();
     }
@@ -30,6 +35,10 @@ public class EnemyAttack : MonoBehaviour
         {
             playerInRange = true;
         }
+		if(other.gameObject == player2)
+		{
+			player2InRange = true;
+		}
     }
 
 
@@ -39,6 +48,10 @@ public class EnemyAttack : MonoBehaviour
         {
             playerInRange = false;
         }
+		if(other.gameObject == player2)
+		{
+			player2InRange = false;
+		}
     }
 
 
@@ -46,7 +59,7 @@ public class EnemyAttack : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        if(timer >= timeBetweenAttacks && playerInRange && enemyHealth.currentHealth > 0)
+        if(timer >= timeBetweenAttacks && (playerInRange || player2InRange) && enemyHealth.currentHealth > 0)
         {
             Attack ();
         }
@@ -55,6 +68,11 @@ public class EnemyAttack : MonoBehaviour
         {
             anim.SetTrigger ("PlayerDead");
         }
+
+		if(player2Health.currentHealth <= 0)
+		{
+			anim.SetTrigger ("PlayerDead");
+		}
     }
 
 
@@ -62,9 +80,16 @@ public class EnemyAttack : MonoBehaviour
     {
         timer = 0f;
 
-        if(playerHealth.currentHealth > 0)
-        {
-            playerHealth.TakeDamage (attackDamage);
-        }
+		if (playerInRange) {
+			if (playerHealth.currentHealth > 0) {
+				playerHealth.TakeDamage (attackDamage);
+			}
+		}
+
+		if (player2InRange) {
+			if (player2Health.currentHealth > 0) {
+				player2Health.TakeDamage (attackDamage);
+			}
+		}
     }
 }
