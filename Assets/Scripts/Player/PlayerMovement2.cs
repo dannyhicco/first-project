@@ -9,12 +9,14 @@ public class PlayerMovement2 : MonoBehaviour
 	private Rigidbody playerRigidbody;
 	private int floorMask;
 	private float camRayLength = 100f;
+	public Camera mainCamera;
 
 	private void Awake()
 	{
 		floorMask = LayerMask.GetMask ("Floor");
 		anim = GetComponent <Animator> ();
 		playerRigidbody = GetComponent <Rigidbody> ();
+		mainCamera = GameObject.Find ("Main Camera 2").GetComponent<Camera>();
 	}
 
 	private void FixedUpdate()
@@ -38,7 +40,7 @@ public class PlayerMovement2 : MonoBehaviour
 
 	private void Turning()
 	{
-		Ray camRay = Camera.main.ScreenPointToRay (Input.mousePosition);
+		Ray camRay = mainCamera.ScreenPointToRay (Input.mousePosition);
 
 		RaycastHit floorHit;
 

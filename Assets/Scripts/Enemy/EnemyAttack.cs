@@ -64,15 +64,11 @@ public class EnemyAttack : MonoBehaviour
             Attack ();
         }
 
-        if(playerHealth.currentHealth <= 0)
+		if(playerHealth.currentHealth <= 0 && player2Health.currentHealth <= 0)
         {
             anim.SetTrigger ("PlayerDead");
         }
 
-		if(player2Health.currentHealth <= 0)
-		{
-			anim.SetTrigger ("PlayerDead");
-		}
     }
 
 

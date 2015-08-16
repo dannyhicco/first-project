@@ -11,15 +11,18 @@ public class PlayerHealth : MonoBehaviour
     public AudioClip deathClip;
     public float flashSpeed = 5f;
     public Color flashColour = new Color(1f, 0f, 0f, 0.1f);
+	public Camera mainCamera;
+	public Camera Player2Camera;
+	public PlayerHealth playerHealth;
+	public PlayerHealth2 player2Health;
 
 
-    Animator anim;
+	Animator anim;
     AudioSource playerAudio;
     PlayerMovement playerMovement;
     PlayerShooting playerShooting;
     bool isDead;
     bool damaged;
-
 
     void Awake ()
     {
@@ -28,7 +31,9 @@ public class PlayerHealth : MonoBehaviour
         playerMovement = GetComponent <PlayerMovement> ();
         playerShooting = GetComponentInChildren <PlayerShooting> ();
         currentHealth = startingHealth;
-    }
+		mainCamera = GameObject.Find ("Main Camera").GetComponent<Camera>();
+		Player2Camera = GameObject.Find ("Main Camera 2").GetComponent<Camera>();
+	}
 
 
     void Update ()
@@ -42,6 +47,7 @@ public class PlayerHealth : MonoBehaviour
             damageImage.color = Color.Lerp (damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
         }
         damaged = false;
+
     }
 
 
@@ -64,22 +70,34 @@ public class PlayerHealth : MonoBehaviour
 
     void Death ()
     {
-        isDead = true;
+		isDead = true;
 
-        playerShooting.DisableEffects ();
+		playerShooting.DisableEffects ();
 
-        anim.SetTrigger ("Die");
+		anim.SetTrigger ("Die");
 
-        playerAudio.clip = deathClip;
-        playerAudio.Play ();
+		playerAudio.clip = deathClip;
+		playerAudio.Play ();
 
-        playerMovement.enabled = false;
-        playerShooting.enabled = false;
-    }
+		playerMovement.enabled = false;
+		playerShooting.enabled = false;
+
+		StartCoroutine (CameraTurnOff ()); 
+	}
+
+	IEnumerator CameraTurnOff () 
+	{
+		yield return new WaitForSeconds (5);
+		Player2Camera.rect = Rect.MinMaxRect(0, 0, 1, 1);
+		mainCamera.enabled = false;
+		transform.Translate (-Vector3.up);
+	}
 
 
     public void RestartLevel ()
     {
-        Application.LoadLevel (Application.loadedLevel);
+		if (playerHealth.currentHealth <= 0 && player2Health.currentHealth <= 0) {
+			Application.LoadLevel (Application.loadedLevel);
+		}
     }
 }

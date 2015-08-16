@@ -3,7 +3,8 @@
 public class EnemyManager : MonoBehaviour
 {
     public PlayerHealth playerHealth;
-    public GameObject enemy;
+	public PlayerHealth2 player2Health;
+	public GameObject enemy;
     public float spawnTime = 3f;
     public Transform[] spawnPoints;
 
@@ -16,7 +17,7 @@ public class EnemyManager : MonoBehaviour
 
     void Spawn ()
     {
-        if(playerHealth.currentHealth <= 0f)
+		if(playerHealth.currentHealth <= 0f && player2Health.currentHealth <= 0f)
         {
             return;
         }

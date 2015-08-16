@@ -11,6 +11,10 @@ public class PlayerHealth2 : MonoBehaviour
     public AudioClip deathClip;
     public float flashSpeed = 5f;
     public Color flashColour = new Color(1f, 0f, 0f, 0.1f);
+	public Camera mainCamera;
+	public Camera PlayerCamera;
+	public PlayerHealth playerHealth;
+	public PlayerHealth2 player2Health;
 
 
     Animator anim;
@@ -20,7 +24,6 @@ public class PlayerHealth2 : MonoBehaviour
     bool isDead;
     bool damaged;
 
-
     void Awake ()
     {
         anim = GetComponent <Animator> ();
@@ -28,7 +31,9 @@ public class PlayerHealth2 : MonoBehaviour
         playerMovement = GetComponent <PlayerMovement2> ();
         playerShooting = GetComponentInChildren <PlayerShooting2> ();
         currentHealth = startingHealth;
-    }
+		mainCamera = GameObject.Find ("Main Camera 2").GetComponent<Camera>();
+		PlayerCamera = GameObject.Find ("Main Camera").GetComponent<Camera>();
+	}
 
 
     void Update ()
@@ -42,7 +47,7 @@ public class PlayerHealth2 : MonoBehaviour
             damageImage.color = Color.Lerp (damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
         }
         damaged = false;
-    }
+	}
 
 
     public void TakeDamage (int amount)
@@ -75,11 +80,23 @@ public class PlayerHealth2 : MonoBehaviour
 
         playerMovement.enabled = false;
         playerShooting.enabled = false;
-    }
+
+		StartCoroutine (CameraTurnOff ()); 
+	}
+
+	IEnumerator CameraTurnOff () 
+	{
+		yield return new WaitForSeconds (5);
+		PlayerCamera.rect = Rect.MinMaxRect(0, 0, 1, 1);
+		mainCamera.enabled = false;
+		transform.Translate (-Vector3.up);
+	}
 
 
-    public void RestartLevel ()
-    {
-        Application.LoadLevel (Application.loadedLevel);
-    }
+	public void RestartLevel ()
+	{
+		if (playerHealth.currentHealth <= 0 && player2Health.currentHealth <= 0) {
+			Application.LoadLevel (Application.loadedLevel);
+		}
+	}
 }

@@ -24,15 +24,22 @@ public class EnemyMovement : MonoBehaviour
 
     void Update ()
     {
-		if(enemyHealth.currentHealth > 0 && playerHealth.currentHealth > 0 && player2Health.currentHealth > 0)
-        {
-			if(Vector3.Distance(transform.position,player.position) < Vector3.Distance(transform.position,player2.position)){
-            	nav.SetDestination (player.position);
+		if (enemyHealth.currentHealth > 0 && (playerHealth.currentHealth > 0 || player2Health.currentHealth > 0)) {
+			if (playerHealth.currentHealth > 0 && player2Health.currentHealth > 0) {
+				if (Vector3.Distance (transform.position, player.position) < Vector3.Distance (transform.position, player2.position)) {
+					nav.SetDestination (player.position);
+				} 
+				else {
+					nav.SetDestination (player2.position);
+				}
 			}
-			if(Vector3.Distance(transform.position,player.position) > Vector3.Distance(transform.position,player2.position)){
+			if(playerHealth.currentHealth <=0){
 				nav.SetDestination (player2.position);
 			}
-        }
+			if(player2Health.currentHealth <=0){
+				nav.SetDestination (player.position);
+			}		
+		}
         else
         {
             nav.enabled = false;
