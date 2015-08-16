@@ -91,7 +91,8 @@ public class PlayerHealth : MonoBehaviour
 		Player2Camera.rect = Rect.MinMaxRect(0, 0, 1, 1);
 		mainCamera.enabled = false;
 		transform.Translate (-Vector3.up);
-	}
+		Destroy (GameObject.Find ("HealthUI"));
+    }
 
 
     public void RestartLevel ()
